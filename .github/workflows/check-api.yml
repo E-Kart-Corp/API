@@ -1,0 +1,80 @@
+# # name: Check API Startup
+
+# # on:
+# #   push:
+# #     branches:
+# #       - main
+# #       - dev
+# #   pull_request:
+# #     branches:
+# #       - main
+# #       - dev
+
+# # jobs:
+# #   check-api:
+# #     runs-on: ubuntu-latest
+
+# #     steps:
+# #       # Étape 1 : Récupérer le code
+# #       - name: Checkout code
+# #         uses: actions/checkout@v3
+
+# #       # Étape 2 : Installer Node.js
+# #       - name: Setup Node.js
+# #         uses: actions/setup-node@v3
+# #         with:
+# #           node-version: 18
+
+# #       # Étape 3 : Installer les dépendances
+# #       - name: Install dependencies
+# #         run: npm install
+
+# #       # Étape 4 : Démarrer l'API
+# #       - name: Start API
+# #         run: |
+# #           nohup npm start &
+# #           sleep 5
+
+# #       # Étape 5 : Vérifier si le serveur écoute
+# #       - name: Check if server is running
+# #         run: |
+# #           if ! nc -zv localhost 3000; then
+# #             echo "Server did not start on port 3000"
+# #             exit 1
+# #           fi
+
+# #       # Étape 6 : Nettoyage
+# #       - name: Cleanup
+# #         run: pkill -f "node"
+
+# name: CI
+
+# on:
+#   push:
+#     branches:
+#       - main
+
+# jobs:
+#   build:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       - name: Checkout code
+#         uses: actions/checkout@v2
+
+#       - name: Set up Node.js
+#         uses: actions/setup-node@v2
+#         with:
+#           node-version: '18'  # ou la version de Node.js que tu utilises
+
+#       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
+#         run: |
+#           echo "$GOOGLE_APPLICATION_CREDENTIALS" > /tmp/firebase-service-account-key.json
+#         env:
+#           GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+#       - name: Install dependencies
+#         run: npm install
+
+#       - name: Run tests
+#         run: npm test

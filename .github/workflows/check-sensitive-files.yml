@@ -1,0 +1,49 @@
+# name: Check for Sensitive Files
+
+# on:
+#   push:
+#     branches:
+#       - dev
+#       - main
+#   pull_request:
+#     branches:
+#       - dev
+#       - main
+
+# jobs:
+#   check_sensitive_files:
+#     runs-on: ubuntu-latest
+
+#     steps:
+#       # Étape 1 : Récupérer le code
+#       - name: Checkout code
+#         uses: actions/checkout@v3
+
+#       # Étape 2 : Installer les dépendances nécessaires
+#       - name: Setup dependencies
+#         run: |
+#           sudo apt-get install -y grep
+
+#       # Étape 3 : Vérifier les fichiers sensibles
+#       - name: Scan for sensitive keys or files
+#         run: |
+#           # Liste des patterns à rechercher
+#           SENSITIVE_PATTERNS="google-services.json|.env|secret|apiKey|PRIVATE_KEY"
+
+#           # Fichiers modifiés dans le commit/push
+#           CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+
+#           echo "Checking the following files for sensitive patterns:"
+#           echo "$CHANGED_FILES"
+
+#           # Vérifier chaque fichier
+#           for FILE in $CHANGED_FILES; do
+#             if [[ -f "$FILE" ]]; then
+#               if grep -Ei "$SENSITIVE_PATTERNS" "$FILE"; then
+#                 echo "❌ Sensitive information found in $FILE"
+#                 exit 1
+#               fi
+#             fi
+#           done
+
+#           echo "✅ No sensitive information found in the files."

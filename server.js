@@ -16,3 +16,6 @@ const server = http.createServer(app);
 server.listen(port, () => {
   console.log(`Server is listening on http://localhost:${port}`);
 });
+
+// Try something
+g

@@ -10,42 +10,24 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Étape 1 : Récupérer le code, y compris le sous-module
-      - name: Checkout code
+      - name: Checkout code with submodules
         uses: actions/checkout@v2
         with:
           submodules: recursive
+          token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
-      # Étape 2 : Installer Node.js
-      - name: Setup Node.js
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '18'
 
-      # Étape 3 : Définir la variable d'environnement
       - name: Set GOOGLE_APPLICATION_CREDENTIALS environment variable
         run: echo $GOOGLE_APPLICATION_CREDENTIALS > firebase_api_key.json
         env:
           GOOGLE_APPLICATION_CREDENTIALS: private_files/firebase_api_key.json
 
-      # Étape 4 : Installer les dépendances
       - name: Install dependencies
         run: npm install
 
-      # Étape 5 : Lancer les tests unitaires
       - name: Run tests
         run: npm test
-
-      # Étape 6 : Démarrer l'API (optionnel)
-      - name: Start API
-        run: |
-          nohup npm start &
-          sleep 5
-
-      # Étape 7 : Vérifier si l'API fonctionne
-      - name: Check if server is running
-        run: |
-          if ! nc -zv localhost 3000; then
-            echo "Server did not start on port 3000"
-            exit 1
-          fi

@@ -71,17 +71,31 @@ The server will run on `http://localhost:3000` by default.
 
 ## API Documentation
 
-### POST `/api/products/upload_image`
+### POST `/api/createProduct`
 
-- **Description**: Upload an image for a product and add it to the Firestore database.
+- **Description**: Upload a new product in a specific category and add it to the Firestore database.
 - **Request Parameters**:
-  - `image` (file): The image file to upload.
-- **Response**: Returns the image URL and confirmation message on successful upload.
+  - `title` : The name of the new prodcut.
+  - `category` : The name of the category if exist or not.
+  - `imageUrl` : Array of each image.
+- **Response**: Returns a confirmation message on successful upload.
 
-### GET `/api/products`
+### POST `/api/checkProduct`
+
+- **Description**: Upload a new category and add it to the Firestore database.
+- **Request Parameters**:
+  - `categoryName` : The name of the new category.
+- **Response**: Returns a confirmation message on successful upload.
+
+### GET `/api/getProduct`
 
 - **Description**: Retrieve the list of all products.
-- **Response**: Returns a JSON array of product objects containing title, categories, price, and image URL.
+- **Response**: Returns a JSON array of product objects containing title, category, and an array image URL.
+
+### GET `/api/getCategory`
+
+- **Description**: Retrieve the list of all categories.
+- **Response**: Returns a JSON array of each category containing title.
 
 ## Socket.IO Events
 

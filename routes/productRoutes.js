@@ -10,7 +10,7 @@ const upload = require("../middlewares/uploadMiddleware");
 const router = express.Router();
 router.post("/create_product", upload.array('image'), createProduct);
 router.post("/check_product", upload.single("image"), checkProduct);
-router.get("/product", getProducts);
+router.get("/getproduct", getProducts);
 router.get("/getCategory", getCategory);
 
 

@@ -78,24 +78,36 @@ The server will run on `http://localhost:3000` by default.
   - `title` : The name of the new prodcut.
   - `category` : The name of the category if exist or not.
   - `imageUrl` : Array of each image.
-- **Response**: Returns a confirmation message on successful upload.
+- **Response**:
+  - `201` : Return a sucessful message -> `Images uploaded successfully and product added to Firestore!`
+  - `400` : Return an error message -> `No files uploaded.`
+  - `500` : Return an error message -> `Server error.`
 
 ### POST `/api/checkProduct`
 
-- **Description**: Upload a new category and add it to the Firestore database.
+- **Description**: Generate an image link to firebase from the picture.
 - **Request Parameters**:
-  - `categoryName` : The name of the new category.
-- **Response**: Returns a confirmation message on successful upload.
+  - `image` : Image from software application.
+- **Response**:
+  - `201` : Return the image and a sucessful message -> `Image uploadée avec succès et produit ajouté dans Firestore !`
+  - `400` : Return an error message -> `No files uploaded.`
+  - `500` : Return an error message -> `Failed to upload image.`
 
 ### GET `/api/getProduct`
 
 - **Description**: Retrieve the list of all products.
-- **Response**: Returns a JSON array of product objects containing title, category, and an array image URL.
+- **Response**:
+  - `200` : Return a JSON array of product objects containing title, category, and an array image URL.
+  - `500` : Return an error message -> `Server error.`
+  - `404` : Return an error message -> `No product found.`
 
 ### GET `/api/getCategory`
 
 - **Description**: Retrieve the list of all categories.
-- **Response**: Returns a JSON array of each category containing title.
+- **Response**:
+  - `200` : Returns a JSON array of each category containing title.
+  - `500` : Return an error message -> `Server error.`
+  - `404` : Return an error message -> `No category found.`
 
 ## Socket.IO Events
 

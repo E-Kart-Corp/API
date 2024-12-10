@@ -141,10 +141,9 @@ const checkProduct = async (req, res) => {
 
 const getProducts = async (req, res) => {
   try {
-    console.log(req.body.category);
     const productRef = db
       .collection("products_extracted")
-      .doc(req.body.category);
+      .doc(req.params.category);
     const doc = await productRef.get();
 
     if (doc.exists) {

@@ -176,5 +176,14 @@ const getCategory = async (req, res) => {
   }
 };
 
+const checkAuthenticated = async (req, res) => {
+  try {
+    if (req.body.code === "1234") res.status(200).json({ success: true });
+    else res.status(200).json({ success: false });
+  } catch (error) {
+    console.error("Error retrieving categories:", error);
+    res.status(500).json({ message: "Server error." });
+  }
+};
 
-module.exports = { createProduct, checkProduct, getProducts, getCategory };
+module.exports = { checkAuthenticated, createProduct, checkProduct, getProducts, getCategory };

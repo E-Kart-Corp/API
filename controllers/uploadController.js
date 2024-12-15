@@ -2,11 +2,13 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { bucket, db, firebaseAdmin } = require("../config/firebaseConfig");
 
-const productDocId = "wait_list";
-
 const createProduct = async (req, res) => {
   try {
     const { title, category } = req.body;
+
+    if (!title || !category) {
+      return res.status(400).json({ message: "Title and category are required." });
+    }
 
     if (!req.files || req.files.length === 0) {
       return res.status(400).json({ message: "No files uploaded." });
@@ -15,31 +17,35 @@ const createProduct = async (req, res) => {
     const imageUrls = [];
 
     const filePromises = req.files.map(async (file) => {
-      const filename = `${Date.now()}-${uuidv4()}${path.extname(
-        file.originalname
-      )}`;
-      const fileUpload = bucket.file(`products/${filename}`);
-      await new Promise((resolve, reject) => {
-        const blobStream = fileUpload.createWriteStream({
-          metadata: {
-            contentType: file.mimetype,
-          },
+      try {
+        const filename = `${Date.now()}-${uuidv4()}${path.extname(file.originalname)}`;
+        const fileUpload = bucket.file(`products/${filename}`);
+        
+        await new Promise((resolve, reject) => {
+          const blobStream = fileUpload.createWriteStream({
+            metadata: {
+              contentType: file.mimetype,
+            },
+          });
+
+          blobStream.on("error", (err) => {
+            reject(new Error("Error uploading file to Firebase Storage."));
+          });
+
+          blobStream.on("finish", resolve);
+          blobStream.end(file.buffer);
         });
 
-        blobStream.on("error", (err) => {
-          reject(new Error("Error uploading file to Firebase Storage."));
+        const [url] = await fileUpload.getSignedUrl({
+          action: "read",
+          expires: "03-01-2500",
         });
 
-        blobStream.on("finish", resolve);
-        blobStream.end(file.buffer);
-      });
-
-      const [url] = await fileUpload.getSignedUrl({
-        action: "read",
-        expires: "03-01-2500",
-      });
-
-      imageUrls.push(url);
+        imageUrls.push(url);
+      } catch (error) {
+        console.error(`Error uploading file ${file.originalname}:`, error);
+        throw error;  // rethrow the error after logging
+      }
     });
 
     await Promise.all(filePromises);
@@ -50,7 +56,7 @@ const createProduct = async (req, res) => {
       imageUrl: imageUrls,
     };
 
-    const productRef = db.collection("products").doc(productDocId);
+    const productRef = db.collection("products").doc('wait_list');
     const doc = await productRef.get();
 
     if (doc.exists) {
@@ -65,9 +71,9 @@ const createProduct = async (req, res) => {
 
     res.status(201).json({
       message: "Images uploaded successfully and product added to Firestore!",
-      imageUrls: imageUrls,
-      title: title,
-      category: category,
+      imageUrls,
+      title,
+      category,
     });
   } catch (error) {
     console.error("Error handling the request:", error);
@@ -76,6 +82,7 @@ const createProduct = async (req, res) => {
     }
   }
 };
+
 
 const checkProduct = async (req, res) => {
   try {

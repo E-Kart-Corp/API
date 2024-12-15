@@ -2,6 +2,8 @@ const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { bucket, db, firebaseAdmin } = require("../config/firebaseConfig");
 
+const productDocId = "wait_list";
+
 const createProduct = async (req, res) => {
   try {
     const { title, category } = req.body;
@@ -48,7 +50,7 @@ const createProduct = async (req, res) => {
       imageUrl: imageUrls,
     };
 
-    const productRef = db.collection("products").doc('wait_list');
+    const productRef = db.collection("products").doc(productDocId);
     const doc = await productRef.get();
 
     if (doc.exists) {

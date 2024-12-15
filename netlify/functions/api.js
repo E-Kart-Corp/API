@@ -5,9 +5,11 @@ const productRoutes = require("../../routes/productRoutes");
 const serverless = require("serverless-http");
 
 const app = express();
-// const port = 3000;
 
-app.use(cors());
+app.use(cors({
+  methods: ['GET', 'POST', 'PUT', 'DELETE'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+}));
 app.use(express.json());
 
 app.get("/", (req, res) => {

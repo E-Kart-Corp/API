@@ -48,7 +48,7 @@ const createProduct = async (req, res) => {
       imageUrl: imageUrls,
     };
 
-    const productRef = db.collection("products").doc(productDocId);
+    const productRef = db.collection("products").doc('wait_list');
     const doc = await productRef.get();
 
     if (doc.exists) {

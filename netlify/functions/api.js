@@ -6,10 +6,7 @@ const serverless = require("serverless-http");
 
 const app = express();
 
-app.use(cors({
-  methods: ['GET', 'POST', 'PUT', 'DELETE'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
-}));
+app.use(cors());
 app.use(express.json());
 
 app.get("/", (req, res) => {

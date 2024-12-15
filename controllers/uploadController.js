@@ -83,13 +83,7 @@ const checkProduct = async (req, res) => {
       return res.status(400).json({ message: "No file uploaded." });
     }
 
-    const [files] = await bucket.getFiles({ prefix: "check/" });
-    for (const file of files) {
-      await file.delete();
-    }
-    const filename = `${Date.now()}-${uuidv4()}${path.extname(
-      req.file.originalname
-    )}`;
+    const filename = `${Date.now()}-${uuidv4()}${path.extname(req.file.originalname)}`;
     const file = bucket.file(`check/${filename}`);
     const blobStream = file.createWriteStream({
       metadata: {
@@ -109,25 +103,25 @@ const checkProduct = async (req, res) => {
       });
 
       const productData = {
-        imageUrl: url,
+        image_url: url,
+        id_user: req.body.id_user, 
       };
 
-      const productRef = db.collection("check").doc(productDocId);
+      const productRef = db.collection("check").doc("wait_list");
       const doc = await productRef.get();
 
       if (doc.exists) {
         await productRef.update({
-          product_to_check: productData,
+          product_to_check: firebaseAdmin.firestore.FieldValue.arrayUnion(productData),
         });
       } else {
         await productRef.set({
-          product_to_check: productData,
+          product_to_check: [productData],
         });
       }
 
       res.status(201).json({
-        message:
-          "Image uploadée avec succès et produit ajouté dans Firestore !",
+        message: "Image uploadée avec succès et produit ajouté dans Firestore !",
         imageUrl: url,
       });
     });
@@ -138,6 +132,7 @@ const checkProduct = async (req, res) => {
     res.status(500).json({ message: "Server error." });
   }
 };
+
 
 const getProducts = async (req, res) => {
   try {
